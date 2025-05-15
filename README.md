@@ -22,7 +22,7 @@ see [commits](https://github.com/prjkt-nv404/UDP-Request-Manager/commits/main)
 sudo -s
 ``` 
 ```
-wget "https://github.com/shakboss/UDP-Request-Manager/blob/main/install.sh" -O install.sh && chmod +x install.sh && ./install.sh
+wget "https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/refs/heads/main/install.sh" -O install.sh && chmod +x install.sh && ./install.sh
 ```
 > after successful installation & reboot, type:
 ```
