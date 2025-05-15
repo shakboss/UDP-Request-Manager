@@ -35,10 +35,34 @@ time_reboot() {
 #======= CONFIGURATION OF UDP-CUSTOM & UDP-REQUEST ========
 
 make_service() {
+  # Retrieve local IP address
   ip_nat=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}' | cut -d '/' -f 1 | grep -oE '[0-9]{1,3}(\.[0-9]{1,3}){3}' | sed -n 1p)
-  interface=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}' | grep "$ip_nat" | awk {'print $NF'})
-  public_ip=$(grep -m 1 -oE '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' <<<"$(wget -T 10 -t 1 -4qO- "http://ip1.dynupdate.no-ip.com/" || curl -m 10 -4Ls "http://ip1.dynupdate.no-ip.com/")")
+  
+  # Identify the network interface
+  interface=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}' | grep "$ip_nat" | awk '{print $NF}')
+  
+  # Fetch public IP address
+  public_ip=$(grep -m 1 -oE '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' <<<"$(wget -T 10 -t 1 -4qO- 'http://ip1.dynupdate.no-ip.com/' || curl -m 10 -4Ls 'http://ip1.dynupdate.no-ip.com/')")
 
+  # Check if public IP was retrieved successfully
+  if [ -z "$public_ip" ]; then
+    echo "Error: Unable to retrieve public IP address."
+    return 1
+  fi
+
+  # Create systemd service file
+  cat <<EOF >/etc/systemd/system/udp-request.service
+[Unit]
+Description=UDP Request Service
+After=network.target
+
+[Service]
+Type=simple
+User =root
+WorkingDirectory=/root
+ExecStart=/usr/bin/udp-request -ip=$public_ip -net=$interface -mode=system
+Restart=always
+RestartSec=3s
 cat <<EOF >/etc/systemd/system/udp-request.service
 [Unit]
 Description=UDP Request Service
