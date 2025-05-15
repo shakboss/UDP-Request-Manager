@@ -132,8 +132,8 @@ else
   make_service
 
   # [+config+]
-  # wget "https://raw.githubusercontent.com/prjkt-nv404/UDP-Request-Manager/main/config/config.json" -O /root/udp/config.json &>/dev/null
-  # chmod +x /root/udp/config.json
+  wget "https://raw.githubusercontent.com/prjkt-nv404/UDP-Request-Manager/main/config/config.json" -O /root/udp/config.json &>/dev/null
+  chmod +x /root/udp/config.json
 
   # [+menu+]
   wget -O /usr/bin/udp 'https://raw.githubusercontent.com/prjkt-nv404/UDP-Request-Manager/main/module/udp' 
