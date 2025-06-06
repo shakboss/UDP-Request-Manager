@@ -15,7 +15,8 @@ sudo apt install -y wget
 sudo apt install -y curl
 sudo apt install -y neofetch
 
-source <(curl -sSL 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/module')
+# Corrected URL for the module
+source <(curl -sSL 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/module')
 
 time_reboot() {
   print_center -ama "${a92:-System/Server Reboot In} $1 ${a93:-Seconds}"
@@ -62,7 +63,7 @@ systemctl start udp-request &>/dev/null
 }
 
 # Check Ubuntu version
-if [ "$(lsb_release -rs)" = "8*|9*|10*|11*|16.04*|18.04*" ]; then
+if [[ "$(lsb_release -rs)" =~ ^(8|9|10|11|16\.04|18\.04) ]]; then
   clear
   print_center -ama -e "\e[1m\e[31m=====================================================\e[0m"
   print_center -ama -e "\e[1m\e[33m${a94:-this script is not compatible with your operating system}\e[0m"
@@ -97,46 +98,40 @@ else
   systemctl stop udp-request &>/dev/null
 
 # [+get files ⇣⇣⇣+]
-  source <(curl -sSL 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/module') &>/dev/null
-  wget -O /etc/UDPRequest/module 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/module' &>/dev/null
+  # Corrected URLs
+  source <(curl -sSL 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/module') &>/dev/null
+  wget -O /etc/UDPRequest/module 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/module' &>/dev/null
   chmod +x /etc/UDPRequest/module
 
 # [+binary+]
-  wget "https://github.com/shakboss/UDP-Request-Manager/blob/main/bin/udp-request-linux-amd64" -O /root/udp/udp-request &>/dev/null
+  wget "https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/bin/udp-request-linux-amd64" -O /root/udp/udp-request &>/dev/null
   mv /root/udp/udp-request /usr/bin
   chmod +x /usr/bin/udp-request
 
-  wget -O /etc/limiter.sh 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/limiter.sh'
+  wget -O /etc/limiter.sh 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/limiter.sh'
   cp /etc/limiter.sh /etc/UDPRequest
   chmod +x /etc/limiter.sh
-  chmod +x /etc/UDPRequest
+  chmod +x /etc/UDPRequest/limiter.sh # Corrected this line as well
   
   # [+udpgw+]
-  wget -O /etc/udpgw 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/udpgw'
+  wget -O /etc/udpgw 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/udpgw'
   mv /etc/udpgw /bin
   chmod +x /bin/udpgw
 
   # [+service+]
-  wget -O /etc/udpgw.service 'https://github.com/shakboss/UDP-Request-Manager/blob/main/config/udpgw.service'
-  # wget -O /etc/udp-request.service 'https://github.com/shakboss/UDP-Request-Manager/blob/main/config/udp-request.service'
+  wget -O /etc/udpgw.service 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/config/udpgw.service'
   
   mv /etc/udpgw.service /etc/systemd/system
-  # mv /etc/udp-request.service /etc/systemd/system
-
+  
   chmod 640 /etc/systemd/system/udpgw.service
-  # chmod 640 /etc/systemd/system/udp-request.service
   
   systemctl daemon-reload &>/dev/null
   systemctl enable udpgw &>/dev/null
   systemctl start udpgw &>/dev/null
   make_service
 
-  # [+config+]
-  # wget "https://github.com/shakboss/UDP-Request-Manager/blob/main/config/config.json" -O /root/udp/config.json &>/dev/null
-  # chmod +x /root/udp/config.json
-
   # [+menu+]
-  wget -O /usr/bin/udp 'https://github.com/shakboss/UDP-Request-Manager/blob/main/module/udp' 
+  wget -O /usr/bin/udp 'https://raw.githubusercontent.com/shakboss/UDP-Request-Manager/main/module/udp' 
   chmod +x /usr/bin/udp
   ufw disable &>/dev/null
   sudo apt-get remove --purge ufw firewalld -y
